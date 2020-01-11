@@ -2,12 +2,13 @@ import time
 from typing import Tuple
 
 from model import Notification
+from repo import Repo
 
 
 class Controller:
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, repo: Repo):
+        self.__repo = repo
 
     def start_polling(self) -> None:
         """
@@ -22,8 +23,7 @@ class Controller:
         """
         Poll data from API.
         """
-        # TODO mock data
-        return (Notification(),)
+        return self.__repo.query_notifications()
 
     def __display(self, notifications: Tuple[Notification, ...]) -> None:
         """
