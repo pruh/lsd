@@ -15,8 +15,12 @@ class Controller:
         Start periodic polling for new data.
         """
         while True:
-            data = self.__poll()
-            self.__display(data)
+            try:
+                data = self.__poll()
+                self.__display(data)
+            except ApiError as err:
+                pass
+
             time.sleep(60)
 
     def __poll(self) -> Tuple[Notification, ...]:
