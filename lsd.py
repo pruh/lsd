@@ -1,12 +1,19 @@
 #!/usr/bin/env python3
 
 from controller import Controller
-from repo import Repo
+from repository import Repository
+import argparse
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-u', '--url', action='store', type=str, help='API base URL', required=True)
+    parser.add_argument('-a', '--username', action='store', type=str, help='HTTP basic auth username')
+    parser.add_argument('-p', '--password', action='store', type=str, help='HTTP basic auth password')
+    args = parser.parse_args()
+
     # Create controller
-    controller = Controller(repo=Repo())
+    controller = Controller(repo=Repository(base_url=args.url, username=args.username, password=args.password))
 
     controller.start_polling()
 
