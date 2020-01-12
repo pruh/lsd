@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
+import argparse
 
 from controller import Controller
 from repository import Repository
-import argparse
+from logger import setup_uncaught_exceptions_logger, setup_default_loggers
 
 
 def main():
+    setup_uncaught_exceptions_logger()
+    setup_default_loggers()
+
     parser = argparse.ArgumentParser()
     parser.add_argument('-u', '--url', action='store', type=str, help='API base URL', required=True)
     parser.add_argument('-a', '--username', action='store', type=str, help='HTTP basic auth username')

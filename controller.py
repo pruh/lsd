@@ -1,8 +1,12 @@
 import time
 from typing import Tuple
+import logging
 
 from model import Notification
 from repository import Repository
+
+
+log = logging.getLogger(__name__)
 
 
 class Controller:
@@ -18,8 +22,8 @@ class Controller:
             try:
                 data = self.__poll()
                 self.__display(data)
-            except ApiError as err:
-                pass
+            except ApiError:
+                logging.exception('Error while querying for notifications')
 
             time.sleep(60)
 
@@ -34,5 +38,4 @@ class Controller:
         Non-blocking display data on LED dot matrix.
         """
         # TODO debug output
-        notif_str = ", ".join(str(item) for item in notifications)
-        print(f"({notif_str})")
+        log.debug(", ".join(str(item) for item in notifications))
