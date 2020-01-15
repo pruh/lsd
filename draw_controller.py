@@ -4,6 +4,7 @@ from queue import Queue
 from threading import Thread
 from drawable import Drawable
 from frames_generator import FrameGenerator, ScrollingFrameGenerator
+from matrix import Matrix
 
 
 log = logging.getLogger(__name__)
@@ -11,12 +12,15 @@ log = logging.getLogger(__name__)
 
 class DrawController():
 
-    def __init__(self, matrix_width: int, matrix_hieght: int):
+    def __init__(self, matrix: Matrix):
         self.__queue = Queue()
-        self.__matrix_width = matrix_width
-        self.__matrix_height = matrix_hieght
-        frame_generator = ScrollingFrameGenerator(matrix_width, matrix_hieght)
-        self.__thread = Thread(name='draw_thread', target=self.__draw, args=(self.__queue, frame_generator.get_frames,), daemon=True)
+        self.__matrix = matrix
+        frame_generator = ScrollingFrameGenerator(self.__matrix.width, self.__matrix.height)
+        self.__thread = Thread(
+            name='draw_thread',
+            target=self.__draw,
+            args=(self.__queue, frame_generator.get_frames,),
+            daemon=True)
 
         self.__thread.start()
     
@@ -25,7 +29,8 @@ class DrawController():
         self.__queue.put(drawable)
 
     def _convert_notification(self, notif: Notification) -> Drawable:
-        w, h = self.__matrix_width, self.__matrix_height
+        w, h = self.__matrix.width, self.__matrix.height
+        # TODO convert text to pixels
         pixels = [[0 for y in range(h)] for x in range(w)]
         return Drawable(pixels=pixels)
 
@@ -35,5 +40,5 @@ class DrawController():
             log.debug(f"drawing {drawable}")
             print(type(frame_gen(drawable)))
             for frame in frame_gen(drawable):
-                pass
+                self.__matrix.draw(frame)
             queue.task_done()

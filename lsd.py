@@ -5,6 +5,7 @@ from controller import Controller
 from repository import Repository
 from logger import setup_uncaught_exceptions_logger, setup_default_loggers
 from draw_controller import DrawController
+from matrix import Matrix
 
 
 def main():
@@ -19,7 +20,8 @@ def main():
 
     # Create controller
     repo = Repository(base_url=args.url, username=args.username, password=args.password)
-    controller = Controller(repo=repo, dc=DrawController(matrix_width=32, matrix_hieght=16))
+    dc=DrawController(matrix=Matrix(width=32, hieght=16))
+    controller = Controller(repo=repo, dc=dc)
 
     controller.start_polling()
 
