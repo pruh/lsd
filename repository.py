@@ -3,7 +3,7 @@ import requests
 from typing import Tuple, Optional, Dict
 import urllib.parse
 from requests.auth import HTTPBasicAuth
-from model import Notification
+from notification import Notification
 
 import uuid
 import dateutil.parser

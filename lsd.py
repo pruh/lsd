@@ -4,6 +4,7 @@ import argparse
 from controller import Controller
 from repository import Repository
 from logger import setup_uncaught_exceptions_logger, setup_default_loggers
+from draw_controller import DrawController
 
 
 def main():
@@ -17,7 +18,8 @@ def main():
     args = parser.parse_args()
 
     # Create controller
-    controller = Controller(repo=Repository(base_url=args.url, username=args.username, password=args.password))
+    repo = Repository(base_url=args.url, username=args.username, password=args.password)
+    controller = Controller(repo=repo, dc=DrawController())
 
     controller.start_polling()
 

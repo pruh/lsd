@@ -2,8 +2,9 @@ import time
 from typing import Tuple
 import logging
 
-from model import Notification
+from notification import Notification
 from repository import Repository
+from draw_controller import DrawController
 
 
 log = logging.getLogger(__name__)
@@ -11,8 +12,9 @@ log = logging.getLogger(__name__)
 
 class Controller:
 
-    def __init__(self, repo: Repository):
+    def __init__(self, repo: Repository, dc: DrawController):
         self.__repo = repo
+        self.__dc = dc
 
     def start_polling(self) -> None:
         """
@@ -37,5 +39,5 @@ class Controller:
         """
         Non-blocking display data on LED dot matrix.
         """
-        # TODO debug output
         log.debug(", ".join(str(item) for item in notifications))
+        [self.__dc.add_to_queue(notif) for notif in notifications]
