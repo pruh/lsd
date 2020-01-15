@@ -19,7 +19,7 @@ def main():
 
     # Create controller
     repo = Repository(base_url=args.url, username=args.username, password=args.password)
-    controller = Controller(repo=repo, dc=DrawController())
+    controller = Controller(repo=repo, dc=DrawController(matrix_width=32, matrix_hieght=16))
 
     controller.start_polling()
 

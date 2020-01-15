@@ -39,5 +39,4 @@ class Controller:
         """
         Non-blocking display data on LED dot matrix.
         """
-        log.debug(", ".join(str(item) for item in notifications))
         [self.__dc.add_to_queue(notif) for notif in notifications]
