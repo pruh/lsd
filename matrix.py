@@ -50,7 +50,8 @@ class Matrix():
         if len(frame) != self.height:
             raise MatrixError(f"frame height should be equal to {self.height}")
 
-        for y in range(self.height / 2):
+        half_screen_size = int(self.height / 2)
+        for y in range(half_screen_size):
             if len(frame[y]) != self.width:
                 raise MatrixError(f"frame width should be equal to {self.width}")
 
@@ -62,7 +63,7 @@ class Matrix():
 
             for x in range(self.width):
                 self._set_top_row_color(frame[y][x])
-                self._set_bottom_row_color(frame[y + self.height / 2][x])
+                self._set_bottom_row_color(frame[y + half_screen_size][x])
 
                 # move to next column
                 self._clk_pin.set_high()
@@ -93,7 +94,7 @@ class Matrix():
         self._green2_pin.set_bit(green)
         self._blue2_pin.set_bit(blue)
 
-    def bits_from_int(x: int) -> Tuple[int, int, int]:
+    def _bits_from_int(self, x: int) -> Tuple[int, int, int]:
         first = x & 1
         second = x & 2
         third = x & 4
@@ -114,6 +115,7 @@ class Pin():
 
     def set_bit(self, bit: int) -> None:
         GPIO.output(self.__pin_number, bit)
+        pass
 
 
 class MatrixError(BaseException):

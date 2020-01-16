@@ -17,8 +17,8 @@ class ScrollingFrameGenerator(FrameGenerator):
         super().__init__(w, h)
     
     def get_frames(self, drawable: Drawable) -> Iterator[List[List[int]]]:
-        current_frame = [[0 for y in range(self._matrix_height)] for x in range(self._matrix_width)]
-        for y in range(len(drawable.pixels[0])):
+        current_frame = [[0 for x in range(self._matrix_width)] for y in range(self._matrix_height)]
+        for y in range(len(drawable.pixels)):
             current_frame = self._shift_frame(current_frame)
             new_last_column = self._get_column(drawable, y)
             current_frame = self._append_last_column(current_frame, new_last_column)
@@ -27,10 +27,10 @@ class ScrollingFrameGenerator(FrameGenerator):
     def _shift_frame(self, frame: List[List[int]]) -> List[List[int]]:
         for x in range(self._matrix_width - 1):
             for y in range(self._matrix_height):
-                frame[x][y] = frame[x + 1][y]
+                frame[y][x] = frame[y][x + 1]
 
         for y in range(self._matrix_height):
-            frame[self._matrix_width - 1][y] = 0
+            frame[y][self._matrix_width - 1] = 0
 
         return frame
 
@@ -43,6 +43,6 @@ class ScrollingFrameGenerator(FrameGenerator):
 
     def _append_last_column(self, frame: List[List[int]], new_last_column: List[int]) -> List[List[int]]:
         for y in range(self._matrix_height):
-            frame[self._matrix_width - 1][y] = new_last_column[y]
+            frame[y][self._matrix_width - 1] = new_last_column[y]
 
         return frame

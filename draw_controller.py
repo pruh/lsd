@@ -32,7 +32,7 @@ class DrawController():
     def _convert_notification(self, notif: Notification) -> Drawable:
         w, h = self.__matrix.width, self.__matrix.height
         # TODO convert text to pixels
-        pixels = [[0 for y in range(h)] for x in range(w)]
+        pixels = [[0 for x in range(w)] for y in range(h)]
         return Drawable(pixels=pixels)
 
     def __draw(self, queue: Queue, frame_gen, refresh_rate: float) -> None:
