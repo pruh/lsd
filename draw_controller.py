@@ -5,6 +5,7 @@ from threading import Thread
 from drawable import Drawable
 from frames_generator import FrameGenerator, ScrollingFrameGenerator
 from matrix import Matrix
+import time
 
 
 log = logging.getLogger(__name__)
@@ -12,14 +13,14 @@ log = logging.getLogger(__name__)
 
 class DrawController():
 
-    def __init__(self, matrix: Matrix):
+    def __init__(self, matrix: Matrix, refresh_rate: float):
         self.__queue = Queue()
         self.__matrix = matrix
         frame_generator = ScrollingFrameGenerator(self.__matrix.width, self.__matrix.height)
         self.__thread = Thread(
             name='draw_thread',
             target=self.__draw,
-            args=(self.__queue, frame_generator.get_frames,),
+            args=(self.__queue, frame_generator.get_frames, refresh_rate,),
             daemon=True)
 
         self.__thread.start()
@@ -34,11 +35,10 @@ class DrawController():
         pixels = [[0 for y in range(h)] for x in range(w)]
         return Drawable(pixels=pixels)
 
-    def __draw(self, queue: Queue, frame_gen) -> None:
+    def __draw(self, queue: Queue, frame_gen, refresh_rate: float) -> None:
         while True:
             drawable = queue.get()
-            log.debug(f"drawing {drawable}")
-            print(type(frame_gen(drawable)))
             for frame in frame_gen(drawable):
                 self.__matrix.draw(frame)
+                time.sleep(refresh_rate)
             queue.task_done()
