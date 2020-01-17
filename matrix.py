@@ -46,7 +46,6 @@ class Matrix():
         self._blue2_pin = Pin(pin_number=19)
 
     def draw(self, frame: np.ndarray) -> None:
-        # TODO update for numpy
         if frame.shape[0] != self.height:
             raise MatrixError(f"frame height should be equal to {self.height}")
         if frame.shape[1] != self.width:
@@ -94,9 +93,9 @@ class Matrix():
         self._blue2_pin.set_bit(blue)
 
     def _bits_from_int(self, x: int) -> Tuple[int, int, int]:
-        first = x & 1
-        second = x & 2
-        third = x & 4
+        first = 1 if x & 1 != 0 else 0
+        second = 1 if x & 2 != 0 else 0
+        third = 1 if x & 4 != 0 else 0
         return (first, second, third)
 
     def reset(self):
