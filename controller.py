@@ -24,7 +24,7 @@ class Controller:
             try:
                 data = self.__poll()
                 self.__display(data)
-            except ApiError:
+            except:
                 logging.exception('Error while querying for notifications')
 
             time.sleep(60)

@@ -1,2 +1,4 @@
 python-dateutil
 RPi.GPIO
+Pillow
+numpy

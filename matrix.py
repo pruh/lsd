@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 from typing import List, Tuple
+import numpy as np
 
 
 class Matrix():
@@ -46,15 +47,15 @@ class Matrix():
         self._green2_pin = Pin(pin_number=21)
         self._blue2_pin = Pin(pin_number=19)
 
-    def draw(self, frame: List[List[int]]) -> None:
-        if len(frame) != self.height:
+    def draw(self, frame: np.ndarray) -> None:
+        # TODO update for numpy
+        if frame.shape[0] != self.height:
             raise MatrixError(f"frame height should be equal to {self.height}")
+        if frame.shape[1] != self.width:
+            raise MatrixError(f"frame width should be equal to {self.width}")
 
         half_screen_size = int(self.height / 2)
         for y in range(half_screen_size):
-            if len(frame[y]) != self.width:
-                raise MatrixError(f"frame width should be equal to {self.width}")
-
             # set row
             self._set_row(y)
 
@@ -62,8 +63,8 @@ class Matrix():
             self._oe_pin.set_low()
 
             for x in range(self.width):
-                self._set_top_row_color(frame[y][x])
-                self._set_bottom_row_color(frame[y + half_screen_size][x])
+                self._set_top_row_color(frame[y, x])
+                self._set_bottom_row_color(frame[y + half_screen_size, x])
 
                 # move to next column
                 self._clk_pin.set_high()
