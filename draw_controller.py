@@ -16,8 +16,8 @@ log = logging.getLogger(__name__)
 
 class DrawController():
 
-    def __init__(self, matrix: Matrix, refresh_rate: float):
-        self.__queue = Queue()
+    def __init__(self, queue: Queue, matrix: Matrix, refresh_rate: float):
+        self.__queue = queue
         self.__matrix = matrix
         frame_generator = ScrollingFrameGenerator(self.__matrix.width, self.__matrix.height)
         self.__font_path = 'fonts/arial.ttf'
@@ -29,11 +29,17 @@ class DrawController():
             daemon=True)
 
         self.__thread.start()
-    
-    def add_to_queue(self, notif: Notification) -> None:
-        log.debug(f"queued: {notif}")
-        drawable = self._convert_notification(notif)
-        self.__queue.put(drawable)
+
+    def __draw(self, queue: Queue, frame_gen: Callable[[Drawable], Iterable[np.ndarray]], refresh_rate: float) -> None:
+        while True:
+            self.__matrix.reset()
+            notif = queue.get()
+            log.debug(f"displaying {notif}")
+            drawable = self._convert_notification(notif)
+            for frame in frame_gen(drawable):
+                self.__matrix.draw(frame)
+                time.sleep(refresh_rate)
+            queue.task_done()
 
     def _convert_notification(self, notif: Notification) -> Drawable:
         text = notif.title
@@ -50,12 +56,3 @@ class DrawController():
         arr = np.where(arr, 0, color)
 
         return Drawable(pixels=arr)
-
-    def __draw(self, queue: Queue, frame_gen: Callable[[Drawable], Iterable[np.ndarray]], refresh_rate: float) -> None:
-        while True:
-            self.__matrix.reset()
-            drawable = queue.get()
-            for frame in frame_gen(drawable):
-                self.__matrix.draw(frame)
-                time.sleep(refresh_rate)
-            queue.task_done()
