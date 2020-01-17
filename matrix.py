@@ -29,9 +29,7 @@ class Matrix():
         GPIO.setmode(GPIO.BCM)
         self._setup_pins()
 
-        self._oe_pin.set_low()
-        self._clk_pin.set_low()
-        self._lat_pin.set_low()
+        self.reset()
 
     def _setup_pins(self):
         self._oe_pin = Pin(pin_number=12)
@@ -100,6 +98,11 @@ class Matrix():
         second = x & 2
         third = x & 4
         return (first, second, third)
+
+    def reset(self):
+        self._oe_pin.set_low()
+        self._clk_pin.set_low()
+        self._lat_pin.set_low()
 
 
 class Pin():

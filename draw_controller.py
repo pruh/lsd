@@ -52,7 +52,7 @@ class DrawController():
 
     def __draw(self, queue: Queue, frame_gen: Callable[[Drawable], Iterable[np.ndarray]], refresh_rate: float) -> None:
         while True:
-            # TODO turn off all pixels
+            self.__matrix.reset()
             drawable = queue.get()
             for frame in frame_gen(drawable):
                 self.__matrix.draw(frame)
