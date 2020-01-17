@@ -24,7 +24,7 @@ class Repository():
             raise ApiError(f"failed to query for notifications {response}")
 
         payload = json.loads(response.content.decode('utf-8'))
-        return (self.__to_notification(item) for item in payload)
+        return tuple(self.__to_notification(item) for item in payload)
 
     def __to_notification(self, notif_dict: Dict[str, str]) -> Notification:
         return Notification(

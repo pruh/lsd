@@ -31,6 +31,7 @@ class DrawController():
         self.__thread.start()
     
     def add_to_queue(self, notif: Notification) -> None:
+        log.debug(f"queued: {notif}")
         drawable = self._convert_notification(notif)
         self.__queue.put(drawable)
 

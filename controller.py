@@ -22,18 +22,13 @@ class Controller:
         """
         while True:
             try:
-                data = self.__poll()
-                self.__display(data)
+                notifications = self.__repo.get_notifications()
+                log.debug(f"queried: {', '.join([str(n) for n in notifications])}")
+                self.__display(notifications)
             except:
                 logging.exception('Error while querying for notifications')
 
             time.sleep(60)
-
-    def __poll(self) -> Tuple[Notification, ...]:
-        """
-        Poll data from API.
-        """
-        return self.__repo.get_notifications()
 
     def __display(self, notifications: Tuple[Notification, ...]) -> None:
         """
