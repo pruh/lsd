@@ -17,8 +17,8 @@ class Repository():
         if username and password:
             self.__auth = HTTPBasicAuth(username=username, password=password)
 
-    def get_notifications(self) -> Tuple[Notification, ...]:
-        url = urllib.parse.urljoin(self.__base_url, 'notifications')
+    def get_notifications(self, only_current: bool = True) -> Tuple[Notification, ...]:
+        url = urllib.parse.urljoin(self.__base_url, 'notifications?only_current=false')
         response = requests.get(url, auth=self.__auth)
         if response.status_code != 200:
             raise ApiError(f"failed to query for notifications {response}")
