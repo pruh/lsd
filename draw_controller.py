@@ -22,7 +22,7 @@ class DrawController():
         self.__matrix = matrix
         frame_generator = ScrollingFrameGenerator(self.__matrix.width, self.__matrix.height)
         self.__font_path = 'fonts/arialb.ttf'
-        self.__font_size = 16
+        self.__font_size = 14
         self.__stopped = threading.Event()
         self._register_exception_handler(self.__stopped)
         self.__thread = threading.Thread(
@@ -54,7 +54,7 @@ class DrawController():
                 start_time = time.time()
                 while time.time() - start_time < refresh_rate:
                     self.__matrix.draw(frame)
-                    
+
                     if stopped.is_set():
                         log.debug('got request to stop drawer thread')
                         self.__matrix.reset()
