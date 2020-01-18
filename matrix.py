@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 from typing import List, Tuple
 import numpy as np
+import time
 
 
 class Matrix():
@@ -53,12 +54,8 @@ class Matrix():
 
         half_screen_size = int(self.height / 2)
         for y in range(half_screen_size):
-            # set row
+            self._oe_pin.set_high()
             self._set_row(y)
-
-            # enable LEDs
-            self._oe_pin.set_low()
-
             for x in range(self.width):
                 self._set_top_row_color(frame[y, x])
                 self._set_bottom_row_color(frame[y + half_screen_size, x])
@@ -67,12 +64,14 @@ class Matrix():
                 self._clk_pin.set_high()
                 self._clk_pin.set_low()
 
-            # disable LEDs
-            self._oe_pin.set_high()
-
             # load registers to LEDs
             self._lat_pin.set_high()
             self._lat_pin.set_low()
+
+            # disable LEDs
+            self._oe_pin.set_low()
+            time.sleep(0.001)
+
 
     def _set_row(self, row: int) -> None:
         a_bit, b_bit, c_bit = self._bits_from_int(row)
@@ -99,7 +98,7 @@ class Matrix():
         return (first, second, third)
 
     def reset(self):
-        self._oe_pin.set_low()
+        self._oe_pin.set_high()
         self._clk_pin.set_low()
         self._lat_pin.set_low()
 

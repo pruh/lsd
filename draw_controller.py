@@ -37,8 +37,9 @@ class DrawController():
             log.debug(f"displaying {notif}")
             drawable = self._convert_notification(notif)
             for frame in frame_gen(drawable):
-                self.__matrix.draw(frame)
-                time.sleep(refresh_rate)
+                start_time = time.time()
+                while time.time() - start_time < refresh_rate:
+                    self.__matrix.draw(frame)
             queue.task_done()
 
     def _convert_notification(self, notif: Notification) -> Drawable:

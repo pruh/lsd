@@ -22,7 +22,7 @@ def main():
     # Create controller
     queue = Queue()
     repo = Repository(base_url=args.url, username=args.username, password=args.password)
-    dc=DrawController(queue=queue, matrix=Matrix(width=32, hieght=16), refresh_rate=0.5)
+    dc=DrawController(queue=queue, matrix=Matrix(width=32, hieght=16), refresh_rate=0.1)
     controller = Controller(repo=repo, queue=queue)
 
     controller.start_polling()
