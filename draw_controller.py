@@ -56,6 +56,7 @@ class DrawController():
                     self.__matrix.draw(frame)
                     
                     if stopped.is_set():
+                        log.debug('got request to stop drawer thread')
                         self.__matrix.reset()
                         break
                 else:
@@ -65,6 +66,7 @@ class DrawController():
                 queue.task_done()
                 self.__matrix.reset()
                 continue
+            log.debug('drawer thread stopped')
             break
 
     def _convert_notification(self, notif: Notification) -> Drawable:
