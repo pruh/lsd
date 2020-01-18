@@ -8,18 +8,18 @@ class Matrix():
     Class represents LED dot matrix. Currently only support 16x32 matrices.
 
     The following pin connection is expected:
-    OE     : 12
-    CLK    : 11
-    LAT    : 7
-    A      : 15
-    B      : 16
-    C      : 18
-    RED1   : 23
-    GREEN1 : 13
-    BLUE1  : 26
-    RED2   : 24
-    GREEN2 : 21
-    BLUE2  : 19
+    OE     : 18
+    CLK    : 17
+    LAT    : 4
+    A      : 22
+    B      : 23
+    C      : 24
+    RED1   : 11
+    GREEN1 : 27
+    BLUE1  : 7
+    RED2   : 8
+    GREEN2 : 9
+    BLUE2  : 10
     """
 
     def __init__(self, width: int, hieght: int):
@@ -32,18 +32,18 @@ class Matrix():
         self.reset()
 
     def _setup_pins(self):
-        self._oe_pin = Pin(pin_number=12)
-        self._clk_pin = Pin(pin_number=11)
-        self._lat_pin = Pin(pin_number=7)
-        self._a_pin = Pin(pin_number=15)
-        self._b_pin = Pin(pin_number=16)
-        self._c_pin = Pin(pin_number=18)
-        self._red1_pin = Pin(pin_number=23)
-        self._green1_pin = Pin(pin_number=13)
-        self._blue1_pin = Pin(pin_number=26)
-        self._red2_pin = Pin(pin_number=24)
-        self._green2_pin = Pin(pin_number=21)
-        self._blue2_pin = Pin(pin_number=19)
+        self._oe_pin = Pin(pin_number=18)
+        self._clk_pin = Pin(pin_number=17)
+        self._lat_pin = Pin(pin_number=4)
+        self._a_pin = Pin(pin_number=22)
+        self._b_pin = Pin(pin_number=23)
+        self._c_pin = Pin(pin_number=24)
+        self._red1_pin = Pin(pin_number=11)
+        self._green1_pin = Pin(pin_number=27)
+        self._blue1_pin = Pin(pin_number=7)
+        self._red2_pin = Pin(pin_number=8)
+        self._green2_pin = Pin(pin_number=9)
+        self._blue2_pin = Pin(pin_number=10)
 
     def draw(self, frame: np.ndarray) -> None:
         if frame.shape[0] != self.height:
@@ -118,7 +118,6 @@ class Pin():
 
     def set_bit(self, bit: int) -> None:
         GPIO.output(self.__pin_number, bit)
-        pass
 
 
 class MatrixError(BaseException):
