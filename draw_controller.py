@@ -20,7 +20,7 @@ class DrawController():
         self.__queue = queue
         self.__matrix = matrix
         frame_generator = ScrollingFrameGenerator(self.__matrix.width, self.__matrix.height)
-        self.__font_path = 'fonts/arial.ttf'
+        self.__font_path = 'fonts/arialb.ttf'
         self.__font_size = 16
         self.__thread = Thread(
             name='draw_thread',
