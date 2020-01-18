@@ -2,6 +2,9 @@ import logging
 import sys
 
 
+log = logging.getLogger(__name__)
+
+
 def setup_default_loggers() -> None:
     __setup_global_logging_levels()
 

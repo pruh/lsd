@@ -23,6 +23,7 @@ class Controller:
         """
         while True:
             self.__queue.join()
+            notifications = None
             try:
                 notifications = self.__repo.get_notifications()
                 log.debug(f"queried: {', '.join([str(n) for n in notifications])}")
