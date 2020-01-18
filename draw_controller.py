@@ -1,7 +1,7 @@
 import logging
 from notification import Notification
 from queue import Queue
-from threading import Thread
+import threading
 from drawable import Drawable
 from frames_generator import FrameGenerator, ScrollingFrameGenerator
 from matrix import Matrix
@@ -9,6 +9,7 @@ import time
 import numpy as np
 from PIL import Image, ImageFont, ImageDraw
 from typing import Callable, Iterable
+import sys
 
 
 log = logging.getLogger(__name__)
@@ -22,17 +23,30 @@ class DrawController():
         frame_generator = ScrollingFrameGenerator(self.__matrix.width, self.__matrix.height)
         self.__font_path = 'fonts/arialb.ttf'
         self.__font_size = 16
-        self.__thread = Thread(
+        self.__stopped = threading.Event()
+        self._register_exception_handler(self.__stopped)
+        self.__thread = threading.Thread(
             name='draw_thread',
             target=self.__draw,
-            args=(self.__queue, frame_generator.get_frames, refresh_rate,),
-            daemon=True)
+            args=(self.__queue, frame_generator.get_frames, refresh_rate, self.__stopped,))
 
         self.__thread.start()
 
-    def __draw(self, queue: Queue, frame_gen: Callable[[Drawable], Iterable[np.ndarray]], refresh_rate: float) -> None:
+    def _register_exception_handler(self, stopped: threading.Event()) -> None:
+        orig_excepthook = sys.excepthook
+
+        def handler(*exc_info):
+            if issubclass(exc_info[0], KeyboardInterrupt) or issubclass(exc_info[0], SystemExit):
+                log.debug('stopping drawing thread')
+                stopped.set()
+
+            orig_excepthook(*exc_info)
+
+        sys.excepthook = handler
+
+    def __draw(self, queue: Queue, frame_gen: Callable[[Drawable], Iterable[np.ndarray]],
+            refresh_rate: float, stopped: threading.Event) -> None:
         while True:
-            self.__matrix.reset()
             notif = queue.get()
             log.debug(f"displaying {notif}")
             drawable = self._convert_notification(notif)
@@ -40,7 +54,18 @@ class DrawController():
                 start_time = time.time()
                 while time.time() - start_time < refresh_rate:
                     self.__matrix.draw(frame)
-            queue.task_done()
+                    
+                    if stopped.is_set():
+                        self.__matrix.reset()
+                        break
+                else:
+                    continue
+                break
+            else:
+                queue.task_done()
+                self.__matrix.reset()
+                continue
+            break
 
     def _convert_notification(self, notif: Notification) -> Drawable:
         text = notif.title
